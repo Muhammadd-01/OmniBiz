@@ -1,0 +1,7 @@
+{
+  "@@locale": "en",
+  "appName": "OmniBiz Suite",
+  "@appName": {
+    "description": "The name of the application"
+  }
+}

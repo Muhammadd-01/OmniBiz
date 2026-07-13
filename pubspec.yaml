@@ -1,0 +1,101 @@
+name: omnibiz_suite
+description: "OmniBiz Suite — All-in-One Business Management System"
+publish_to: "none"
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.8.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  # State Management
+  flutter_riverpod: ^2.6.1
+  riverpod_annotation: any
+
+  # Navigation
+  go_router: any
+
+  # Networking
+  dio: any
+
+  # Data Classes & Serialization
+  freezed_annotation: any
+  json_annotation: any
+
+  # Dependency Injection
+  get_it: ^8.0.2
+
+  # Local Storage
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+
+  # UI & Design
+  google_fonts: ^6.2.1
+  flutter_svg: ^2.0.17
+  cached_network_image: ^3.4.1
+  shimmer: ^3.0.0
+  flutter_animate: ^4.5.2
+  gap: ^3.0.1
+  icons_plus: ^5.0.0
+
+  # Connectivity
+  connectivity_plus: ^6.1.4
+
+  # Notifications
+  flutter_local_notifications: ^19.1.0
+
+  # Utilities
+  intl: ^0.20.2
+  equatable: ^2.0.7
+  dartz: ^0.10.1
+  uuid: ^4.5.1
+  url_launcher: ^6.3.1
+  share_plus: ^10.1.4
+  path_provider: ^2.1.5
+  package_info_plus: ^8.3.0
+  permission_handler: ^11.4.0
+  image_picker: ^1.1.2
+  flutter_secure_storage: ^9.2.4
+  logger: ^2.5.0
+  pretty_dio_logger: ^1.4.0
+  infinite_scroll_pagination: ^4.1.0
+  pull_to_refresh_flutter3: ^2.0.2
+  flutter_staggered_animations: ^1.1.1
+  fl_chart: ^0.70.2
+  table_calendar: ^3.2.0
+  qr_flutter: ^4.1.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+  # Code Generation
+  build_runner: any
+  freezed: any
+  json_serializable: any
+  riverpod_generator: any
+  go_router_builder: any
+
+  # Testing
+  mocktail: ^1.0.4
+  flutter_launcher_icons: ^0.14.4
+
+flutter:
+  uses-material-design: true
+  generate: true
+
+  assets:
+    - assets/images/
+    - assets/icons/
+    - assets/fonts/
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/icon/app_icon.jpg"
+  min_sdk_android: 21

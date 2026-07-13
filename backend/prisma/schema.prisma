@@ -1,0 +1,190 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Platform Models
+model Tenant {
+  id                 String             @id @default(uuid())
+  name               String
+  domain             String             @unique
+  subscriptionPlanId String?
+  subscriptionPlan   SubscriptionPlan?  @relation(fields: [subscriptionPlanId], references: [id])
+  modules            TenantModule[]
+  users              UserTenant[]
+  branches           Branch[]
+  departments        Department[]
+  customers          Customer[]
+  staffProfiles      StaffProfile[]
+  categories         Category[]
+  products           Product[]
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+}
+
+model SubscriptionPlan {
+  id          String   @id @default(uuid())
+  name        String
+  price       Float
+  features    Json
+  tenants     Tenant[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model BusinessModule {
+  id          String         @id @default(uuid())
+  code        String         @unique
+  name        String
+  description String?
+  tenants     TenantModule[]
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+}
+
+model TenantModule {
+  id               String         @id @default(uuid())
+  tenantId         String
+  businessModuleId String
+  isActive         Boolean        @default(true)
+  tenant           Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  module           BusinessModule @relation(fields: [businessModuleId], references: [id], onDelete: Cascade)
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  @@unique([tenantId, businessModuleId])
+}
+
+// Identity Models
+model User {
+  id          String       @id @default(uuid())
+  email       String       @unique
+  password    String
+  firstName   String?
+  lastName    String?
+  isActive    Boolean      @default(true)
+  roles       UserRole[]
+  tenants     UserTenant[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model Role {
+  id          String       @id @default(uuid())
+  name        String       @unique
+  description String?
+  permissions Permission[]
+  users       UserRole[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model Permission {
+  id          String   @id @default(uuid())
+  action      String
+  resource    String
+  roleId      String
+  role        Role     @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model UserRole {
+  id        String   @id @default(uuid())
+  userId    String
+  roleId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role      Role     @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, roleId])
+}
+
+model UserTenant {
+  id        String   @id @default(uuid())
+  userId    String
+  tenantId  String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, tenantId])
+}
+
+// Org Models
+model Branch {
+  id          String       @id @default(uuid())
+  tenantId    String
+  name        String
+  address     String?
+  tenant      Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  departments Department[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model Department {
+  id          String   @id @default(uuid())
+  tenantId    String
+  branchId    String
+  name        String
+  description String?
+  tenant      Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  branch      Branch   @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// Core Business Models
+model Customer {
+  id        String   @id @default(uuid())
+  tenantId  String
+  name      String
+  email     String?
+  phone     String?
+  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model StaffProfile {
+  id          String   @id @default(uuid())
+  tenantId    String
+  userId      String   @unique
+  position    String
+  department  String?
+  tenant      Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Category {
+  id          String    @id @default(uuid())
+  tenantId    String
+  name        String
+  description String?
+  tenant      Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  products    Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Product {
+  id          String   @id @default(uuid())
+  tenantId    String
+  categoryId  String
+  name        String
+  description String?
+  price       Float
+  sku         String?
+  tenant      Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  category    Category @relation(fields: [categoryId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
